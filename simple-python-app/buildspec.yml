@@ -1,10 +1,11 @@
-
 version: 0.2
+
 env:
   parameter-store:
-    DOCKER_REGISTRY_USERNAME: /myapp/python-app/docker-cred/username
-    DOCKER_REGISTRY_PASSWORD: /myapp/python-app/docker-cred/password
-    DOCKER_REGISTRY_URL: /myapp/python-app/docker-registry/url
+    DOCKER_REGISTRY_USERNAME: "/myapp/python-app/docker-cred/username"
+    DOCKER_REGISTRY_PASSWORD: "/myapp/python-app/docker-cred/password"
+    DOCKER_REGISTRY_URL: "/myapp/python-app/docker-registry/url"
+
 phases:
   install:
     runtime-versions:
@@ -21,15 +22,14 @@ phases:
       - echo "Build phase: Navigating to app directory..."
       - cd simple-python-app
       - echo "Logging in to Docker registry..."
-      - echo "$DOCKER_REGISTRY_PASSWORD" | docker login -u
-        "$DOCKER_REGISTRY_USERNAME" --password-stdin "$DOCKER_REGISTRY_URL"
+      - |
+        echo "$DOCKER_REGISTRY_PASSWORD" | docker login -u "$DOCKER_REGISTRY_USERNAME" --password-stdin "$DOCKER_REGISTRY_URL"
       - echo "Building Docker image..."
-      - docker build -t
-        "$DOCKER_REGISTRY_URL/$DOCKER_REGISTRY_USERNAME/simple-python-flask-app:latest"
-        .
+      - |
+        docker build -t "$DOCKER_REGISTRY_URL/$DOCKER_REGISTRY_USERNAME/simple-python-flask-app:latest" .
       - echo "Pushing Docker image..."
-      - docker push
-        "$DOCKER_REGISTRY_URL/$DOCKER_REGISTRY_USERNAME/simple-python-flask-app:latest"
+      - |
+        docker push "$DOCKER_REGISTRY_URL/$DOCKER_REGISTRY_USERNAME/simple-python-flask-app:latest"
   post_build:
     commands:
       - echo "Build completed successfully!"
